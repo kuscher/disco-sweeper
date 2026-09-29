@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The mirrorball for themed icons: a disc with its facet lines cut out (evenOdd), so the
+     lines stay holes whatever colour the launcher tints the icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tint="?android:attr/colorControlNormal"
+    android:height="108dp"
+    android:width="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group>
+        <clip-path android:pathData="M54.0,54.0m-21.0,0a21.0,21.0 0,1 1,42.0 0a21.0,21.0 0,1 1,-42.0 0"/>
+        <path
+            android:fillColor="#ffffffff"
+            android:fillType="evenOdd"
+            android:pathData="M54.0,54.0m-21.0,0a21.0,21.0 0,1 1,42.0 0a21.0,21.0 0,1 1,-42.0 0M37.55,33.00h1.4v42.00h-1.4zM42.80,33.00h1.4v42.00h-1.4zM48.05,33.00h1.4v42.00h-1.4zM53.30,33.00h1.4v42.00h-1.4zM58.55,33.00h1.4v42.00h-1.4zM63.80,33.00h1.4v42.00h-1.4zM69.05,33.00h1.4v42.00h-1.4z"/>
+    </group>
+</vector>

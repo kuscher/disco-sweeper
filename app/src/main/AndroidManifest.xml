@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-feature
+        android:name="android.software.freeform_window_management"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+    <application
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:supportsRtl="true"
+        android:roundIcon="@mipmap/ic_launcher">
+        <activity
+            android:label="@string/app_name"
+            android:name="io.github.kuscher.discosweeper.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="smallestScreenSize|screenSize|uiMode|screenLayout|orientation|keyboard|keyboardHidden|navigation|touchscreen"
+            android:resizeableActivity="true">
+            <layout
+                android:gravity="center"
+                android:minWidth="640dp"
+                android:minHeight="440dp"
+                android:defaultWidth="660dp"
+                android:defaultHeight="740dp"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
