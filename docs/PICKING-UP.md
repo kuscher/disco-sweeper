@@ -11,8 +11,8 @@ Disco Sweeper is Alexander Kuscher's private, personal passion project: he made 
   `SHA256SUMS`, built by `tools/release.sh`. Release files are kept in
   `executables/release-<version>/` (gitignored).
 - Release key `~/.config/discosweeper/keystore.jks` + `keystore.pass` (not in git), alias
-  `discosweeper`, certificate SHA-256 `A5:32:63:72:…:8F:D7:58:60`. Backed up to the owner's a private folder, with a README; the password is for the owner's password
-  manager.
+  `discosweeper`, certificate SHA-256 `BA:4D:93:AA:…:4B:9A:79:17`. A new key since 2026-09-30 (the one Google Play uses too;
+  GitHub installs of 1.0 must be uninstalled once), backed up with its password to the owner's a private folder, with a README.
 - Where the code came from: the Sweeper module of the owner's private Disco app collection, moved
   here on its own with a new package, `io.github.kuscher.discosweeper`.
 

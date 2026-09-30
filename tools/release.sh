@@ -16,7 +16,7 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
 REPO=kuscher/disco-sweeper
 # The release key's certificate. Every release must carry it, or updates won't install over it.
-RELEASE_CERT=a532637214496090e9dd5afe28ffc39ac4ced0d126a185156f40efac8fd75860
+RELEASE_CERT=ba4d93aad05548d8025ede97b4c2d63e1cd6cb314a99f5c10696229d4b9a7917
 die() { echo "release: $*" >&2; exit 1; }
 
 V=$(sed -n 's/^ *versionName = "\(.*\)"/\1/p' app/build.gradle.kts)
