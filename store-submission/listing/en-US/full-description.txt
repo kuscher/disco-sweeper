@@ -1,0 +1,26 @@
+Disco Sweeper is the classic Minesweeper puzzle the way you remember it, dressed for a party: tiles you clear, numbers that count the disco balls around them, and sunglasses for the tiles you're sure about. Open a ball and the party finds you.
+
+The board follows your window
+Make the window bigger and you get more rows and columns, not a small board in a sea of empty space. Pick a difficulty and the window resizes itself to the classic 9 × 9, 16 × 16 or 30 × 16.
+
+No-guess boards
+Turn them on and every board can be cleared by logic alone.
+
+A hint that never lies
+It uses only what the numbers prove and never trusts your own marks, so it can even show you a mark that's wrong.
+
+Four difficulties
+Beginner, Intermediate, Expert and Custom (9 to 30 columns, 9 to 24 rows, 8% to 35% disco balls), with a best time for every board size.
+
+Made for a mouse and keyboard
+Right-click to mark, middle-click or left and right together to clear around a number. Touch works too: press and hold to mark. Your first click is always safe.
+
+Light and dark, with a colour for each difficulty. Optional sound: ticks, chimes and a beat under the disco ball.
+
+Private
+No permissions at all: no internet, no storage. No accounts, no ads, no analytics. Your settings and best times stay on your device.
+
+About 100 KB. Designed for laptops and tablets with desktop windows, and works full screen too.
+
+Free and open source
+Disco Sweeper is a personal passion project by Alexander Kuscher, not affiliated with or endorsed by any employer. The code is MIT-licensed: github.com/kuscher/disco-sweeper
