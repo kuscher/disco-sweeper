@@ -35,8 +35,9 @@ The tag is `v` plus `versionName`, exactly: `v1.1` for `versionName = "1.1"`.
   (`tools/play-upload.mjs`). What is live stays live. If that version code is on Play already, the
   step does nothing.
 
-If only the Play job fails, re-run that job, not the whole run: the GitHub release exists by then
-and can't be created twice.
+If a run fails after the GitHub release was made, fix the cause and re-run it (the whole run or only
+the failed job): a release that exists is left as it is, and a version code that is on Play already
+isn't uploaded twice.
 
 ## Dry run
 
@@ -67,8 +68,8 @@ exist. It builds the same `DiscoSweeper.apk`, `SHA256SUMS` and notes into
 (`./gradlew :app:bundleRelease` does).
 
 `tools/release.sh --publish` pushes the tag itself and creates the GitHub release. The tag starts
-the workflow too, and its GitHub step then fails because the release exists, so nothing reaches
-Play. Keep `--publish` for when Actions can't be used; the tag is the usual way.
+the workflow too: it leaves that release as it is, and still builds the bundle and puts it on Play
+as a draft. Keep `--publish` for when Actions can't be used; the tag is the usual way.
 
 ## Checking a release by hand
 
