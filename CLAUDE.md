@@ -26,7 +26,8 @@ app/src/main/java/io/github/kuscher/discosweeper/
   audio/Sfx         sounds synthesised into static AudioTracks on a background thread
 app/src/debug/      test hooks for ./ds debug (never in a release)
 app/sim/            headless checks: Sim (board fit), SolverSim (generator, hints, save/restore)
-tools/              icon.py (README icon from the launcher vectors), smoke.sh, release.sh
+tools/              icon.py (README icon from the launcher vectors), smoke.sh, release.sh (a release
+                    by hand), play-upload.mjs (the release workflow's upload to Google Play)
 ```
 
 ## Build and check
@@ -95,10 +96,18 @@ targetSdk stays 36: the windowing behaviour was measured against it.
 
 ## Releasing
 
-`tools/release.sh` builds the signed APK and checks the certificate, package, version, that there
-are no permissions and no test hooks; `--publish` tags and creates the GitHub release with
-`DiscoSweeper.apk` (a stable name for `releases/latest/download/`) and `SHA256SUMS`. Bump
-`versionCode`/`versionName` in `app/build.gradle.kts` and add a CHANGELOG section first. The key
-is in `~/.config/discosweeper` (never in git) and backed up privately; see docs/PICKING-UP.md.
+A release is a tag; no machine needs the key file. Bump `versionCode`/`versionName` in
+`app/build.gradle.kts`, add a CHANGELOG section and the Play "What's new" text
+(`store-submission/listing/en-US/release-notes.txt`, at most 500 characters), commit, push, then
+`git tag v<version> && git push origin v<version>`. GitHub Actions
+(`.github/workflows/release.yml`) builds and signs, checks the certificate, package, version, that
+there are no permissions and no test hooks, publishes the GitHub release with `DiscoSweeper.apk`
+(a stable name for `releases/latest/download/`) and `SHA256SUMS`, and puts the bundle on Google
+Play's closed-testing track as a draft. Someone still presses "Send for review" in the Play
+Console. "Run workflow" on the Actions tab is a dry run that publishes nothing.
+
+The key is a secret of the GitHub environment `release`, backed up to private storage; never ask
+for the key file. `tools/release.sh` does the same build and checks on a machine that has the key
+in `~/.config/discosweeper`. All of it is in [docs/RELEASING.md](docs/RELEASING.md).
 
 Commit as the global git identity (the noreply address); never pass `-c user.email`.

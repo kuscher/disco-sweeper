@@ -106,6 +106,9 @@ Wireless debugging, and `tools/smoke.sh` plays a whole game through the debug bu
 hooks; CI runs it in an x86_64 emulator. [CLAUDE.md](CLAUDE.md) explains how the code is organised,
 and [docs/WINDOWING.md](docs/WINDOWING.md) how the board follows the window.
 
+Releases are built and signed by GitHub Actions when a version tag is pushed:
+[docs/RELEASING.md](docs/RELEASING.md).
+
 ## About this project
 
 Disco Sweeper is my private, personal passion project. I made it, I own it, and I publish it here

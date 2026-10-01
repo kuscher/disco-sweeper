@@ -8,11 +8,16 @@ Disco Sweeper is Alexander Kuscher's private, personal passion project: he made 
 ## Where things live
 - Repo `~/disco-sweeper`, GitHub github.com/kuscher/disco-sweeper (public). Releases carry
   `DiscoSweeper.apk` (stable name for `releases/latest/download/DiscoSweeper.apk`) and
-  `SHA256SUMS`, built by `tools/release.sh`. Release files are kept in
-  `executables/release-<version>/` (gitignored).
-- Release key `~/.config/discosweeper/keystore.jks` + `keystore.pass` (not in git), alias
-  `discosweeper`, certificate SHA-256 `BA:4D:93:AA:…:4B:9A:79:17`. A new key since 2026-09-30 (the one Google Play uses too;
-  GitHub installs of 1.0 must be uninstalled once), backed up with its password to the owner's a private folder, with a README.
+  `SHA256SUMS`.
+- Releasing: push a tag `v<version>` and GitHub Actions builds, signs and publishes it: the APK as
+  a GitHub release, the bundle as a draft on Google Play's closed-testing track ("Send for review"
+  stays a button in the Play Console). No machine needs the key. Steps, the dry run and the route
+  by hand (`tools/release.sh`, files in the gitignored `executables/release-<version>/`):
+  [RELEASING.md](RELEASING.md).
+- Release key: secrets of the GitHub environment `release` (the Play key: environment `play`),
+  alias `discosweeper`, certificate SHA-256 `BA:4D:93:AA:…:4B:9A:79:17`. A new key since 2026-09-30 (the one Google Play uses too;
+  GitHub installs of 1.0 must be uninstalled once), backed up with its password to the owner's a private folder, with a README. A machine that has it keeps
+  it in `~/.config/discosweeper/keystore.jks` + `keystore.pass` (not in git).
 - Where the code came from: the Sweeper module of the owner's private Disco app collection, moved
   here on its own with a new package, `io.github.kuscher.discosweeper`.
 

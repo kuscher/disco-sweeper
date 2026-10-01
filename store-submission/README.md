@@ -30,9 +30,13 @@ made with `scripts/play/graphics.mjs` in kuscher/googlebook-tech.
 1. **App signing (decide once, it can't be undone).** Recommended, as for Summa: *Use existing app signing key* and upload
    `~/.config/discosweeper/keystore.jks` with Google's PEPK tool, so the Play build and the APKs on GitHub have the same signature and people can
    move between them without uninstalling. The same key is the upload key.
-2. **Build the bundle** (Play only takes .aab files): `./gradlew :app:bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`, signed with `~/.config/discosweeper/keystore.jks` (`tools/release.sh` signs the GitHub APK with the same key). Each upload needs a higher version code than the last
+2. **Build the bundle** (Play only takes .aab files): pushing a release tag does it. The release workflow builds
+   `app-release.aab`, signs it with the same key as the GitHub APK and puts it on the closed-testing track as a draft
+   (see [docs/RELEASING.md](../docs/RELEASING.md)). By hand, on a machine that has the key: `./gradlew :app:bundleRelease` →
+   `app/build/outputs/bundle/release/app-release.aab`. Each upload needs a higher version code than the last
    (`versionCode` in `app/build.gradle.kts` (1 for 1.0)).
 3. **Closed test first.** The developer account is a personal one: before production, a closed test with at least 12
    testers opted in for 14 days in a row.
 4. **Store listing, store settings and App content:** filled in from these files on 30 September 2026.
-5. **Release:** add the bundle to the closed testing track, paste `release-notes.txt`, send for review.
+5. **Release:** the release workflow adds the bundle to the closed testing track as a draft, with `release-notes.txt`
+   as its "What's new". Sending it for review stays a button in the Play Console.
