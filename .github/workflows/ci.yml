@@ -3,8 +3,8 @@
 #
 # Disco Sweeper is developed on an Arm laptop, and many Android laptops have Intel chips. The APK
 # is pure Java with no native code, so it's the same file on both, and this checks it on an
-# x86_64 device. No keys here: release APKs are signed on the maintainer's machine
-# (tools/release.sh), so this workflow only ever builds debug and unsigned release APKs.
+# x86_64 device. No keys here: release APKs are signed by the release workflow (release.yml), whose
+# key this workflow never gets, so it only ever builds debug and unsigned release APKs.
 name: CI
 
 on:
@@ -119,7 +119,7 @@ jobs:
 
       - name: The minified release build starts and survives a restart
         # R8 only runs on release builds, so check that one too, signed with a throwaway key
-        # (the real key never leaves the maintainer's machine).
+        # (the real key is only for the release workflow).
         run: |
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
           keytool -genkeypair -keystore ci.jks -storepass cipass -keypass cipass -alias ci \

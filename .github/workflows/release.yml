@@ -1,0 +1,180 @@
+# Pushing a tag like v1.1 builds, signs and publishes that release: the APK as a GitHub release, the
+# bundle as a draft on Google Play's closed-testing track (see docs/RELEASING.md).
+# "Run workflow" on the Actions tab is a dry run: the same signed build and checks, nothing published.
+#
+# The signing key and the Play key are secrets of the environments "release" and "play", which only
+# main and v* tags can use; forks and pull requests never get them. The job that holds the signing
+# key uses only GitHub's own actions, pinned to exact commits, and the Play job never sees that key.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CERT: ba4d93aad05548d8025ede97b4c2d63e1cd6cb314a99f5c10696229d4b9a7917 # the Disco Sweeper release key
+  PLAY_NOTES: store-submission/listing/en-US/release-notes.txt
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Release notes and version
+        if: github.ref_type == 'tag'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          grep -Eq "^## $VERSION( |\$)" CHANGELOG.md || { echo "::error::CHANGELOG.md has no section for $VERSION"; exit 1; }
+          grep -q "versionName = \"$VERSION\"" app/build.gradle.kts || { echo "::error::versionName in app/build.gradle.kts isn't $VERSION"; exit 1; }
+          test "$(wc -m < "$PLAY_NOTES")" -le 500 || { echo "::error::$PLAY_NOTES is over Play's 500 characters"; exit 1; }
+
+      - name: SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-37.0" "build-tools;36.0.0" > /dev/null
+
+      - name: Board fit, solver and save/restore checks
+        run: ./ds sim
+
+      - name: Signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_B64 }}
+          KEYSTORE_PASS: ${{ secrets.SIGNING_KEYSTORE_PASS }}
+        run: |
+          test -n "$KEYSTORE_B64" && test -n "$KEYSTORE_PASS" || { echo "::error::the signing secrets aren't set"; exit 1; }
+          mkdir -p ~/.config/discosweeper
+          echo "$KEYSTORE_B64" | base64 -d > ~/.config/discosweeper/keystore.jks
+          printf '%s' "$KEYSTORE_PASS" > ~/.config/discosweeper/keystore.pass
+
+      - name: Build
+        run: ./gradlew :app:assembleRelease :app:bundleRelease --no-daemon --console=plain
+
+      - name: Check the certificate
+        run: |
+          APK=app/build/outputs/apk/release/app-release.apk
+          AAB=app/build/outputs/bundle/release/app-release.aab
+          apk_cert=$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$APK" | sed -n 's/.*SHA-256 digest: //p' | head -1)
+          echo "APK certificate:    $apk_cert"
+          test "$apk_cert" = "$CERT" || { echo "::error::the APK isn't signed with the Disco Sweeper release key"; exit 1; }
+          aab_cert=$(keytool -printcert -jarfile "$AAB" | sed -n 's/.*SHA256: //p' | head -1 | tr -d ':' | tr 'A-F' 'a-f')
+          echo "bundle certificate: $aab_cert"
+          test "$aab_cert" = "$CERT" || { echo "::error::the bundle isn't signed with the Disco Sweeper release key"; exit 1; }
+          sha256sum "$APK" "$AAB"
+
+      - name: Check the package (as tools/release.sh does)
+        run: |
+          APK=app/build/outputs/apk/release/app-release.apk
+          BT="$ANDROID_HOME/build-tools/36.0.0"
+          V=$(sed -n 's/^ *versionName = "\(.*\)"/\1/p' app/build.gradle.kts)
+          CODE=$(sed -n 's/^ *versionCode = \([0-9]*\)/\1/p' app/build.gradle.kts)
+          badging=$("$BT/aapt2" dump badging "$APK" | head -1)
+          echo "$badging"
+          [[ $badging == *"name='io.github.kuscher.discosweeper'"*"versionCode='$CODE'"*"versionName='$V'"* ]] \
+            || { echo "::error::unexpected package or version"; exit 1; }
+          perms=$("$BT/aapt2" dump permissions "$APK" | grep -c "uses-permission" || true)
+          [[ $perms == 0 ]] || { echo "::error::the release asks for permissions; it's meant to ask for none"; exit 1; }
+          if unzip -p "$APK" 'classes*.dex' | grep -aq DebugHooks; then
+            echo "::error::the debug test hooks are in the release APK"; exit 1
+          fi
+          echo "no permissions, no test hooks"
+
+      - name: Release files
+        run: |
+          # The same files as tools/release.sh makes: the APK under its stable name (the README links
+          # to releases/latest/download/DiscoSweeper.apk), its checksum, and the notes: the version's
+          # CHANGELOG section, install, verify.
+          V=$(sed -n 's/^ *versionName = "\(.*\)"/\1/p' app/build.gradle.kts)
+          mkdir release
+          cp app/build/outputs/apk/release/app-release.apk release/DiscoSweeper.apk
+          (cd release && sha256sum DiscoSweeper.apk > SHA256SUMS)
+          {
+            echo "**Disco Sweeper $V**: Minesweeper with disco balls, made for Android laptops and desktop windows."
+            echo
+            awk -v v="$V" '$0 ~ "^## " v "( |$)" {on=1; next} /^## / {on=0} on' CHANGELOG.md | sed '/./,$!d'
+            cat <<EOF
+
+          ### Install
+          1. On your device (Android 12 or later), download **DiscoSweeper.apk** below and open it from your
+             browser's downloads or your files app. If Android asks, allow that app to install apps, then tap
+             **Install**.
+          2. Open **Disco Sweeper** from your apps.
+
+          It asks for no permissions at all. The full guide is in the
+          [README](https://github.com/$GITHUB_REPOSITORY#readme).
+
+          ### Verify
+          - SHA-256 of \`DiscoSweeper.apk\`: see \`SHA256SUMS\`.
+          - Signing certificate SHA-256: \`$(echo "$CERT" | tr a-f A-F | sed 's/../&:/g; s/:$//')\`
+            (\`apksigner verify --print-certs DiscoSweeper.apk\`). Every future release is signed with the
+            same key, so updates install over this one.
+          EOF
+          } > release/notes.md
+          cat release/SHA256SUMS release/notes.md
+
+      - name: Publish on GitHub
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag --title "Disco Sweeper ${GITHUB_REF_NAME#v}" \
+            --notes-file release/notes.md \
+            release/DiscoSweeper.apk release/SHA256SUMS
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bundle
+          path: app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Remove the key
+        if: always()
+        run: rm -rf ~/.config/discosweeper
+
+  play:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: play
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: The bundle from the build job
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --name bundle --dir bundle
+
+      - name: Google Play (a draft on closed testing; a dry run only checks the key)
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            node tools/play-upload.mjs io.github.kuscher.discosweeper bundle/app-release.aab "$PLAY_NOTES" --name "${GITHUB_REF_NAME#v}"
+          else
+            node tools/play-upload.mjs io.github.kuscher.discosweeper --check
+          fi
