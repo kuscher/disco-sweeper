@@ -106,7 +106,7 @@ there are no permissions and no test hooks, publishes the GitHub release with `D
 Play's closed-testing track as a draft. Someone still presses "Send for review" in the Play
 Console. "Run workflow" on the Actions tab is a dry run that publishes nothing.
 
-The key is a secret of the GitHub environment `release`, backed up to private storage; never ask
+The key is a secret of the GitHub environment `release`, backed up privately; never ask
 for the key file. `tools/release.sh` does the same build and checks on a machine that has the key
 in `~/.config/discosweeper`. All of it is in [docs/RELEASING.md](docs/RELEASING.md).
 
