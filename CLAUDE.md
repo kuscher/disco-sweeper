@@ -3,6 +3,11 @@
 Notes for working on Disco Sweeper. [README.md](README.md) says what the app does; this is what to
 know before changing code. Status and next steps: [docs/PICKING-UP.md](docs/PICKING-UP.md).
 
+## This repo is public
+The Play listing links here. Keep out of every file, commit message and release note: device serial numbers and
+adb names, build numbers and codenames, what else is installed or open on the owner's devices, the names of his
+private projects and paths into their repos, and where signing keys are backed up (say "backed up privately").
+
 ## House style: framework Java only
 
 No Kotlin, no Compose, no AndroidX, no third-party libraries, no layout XML. Every surface is drawn
