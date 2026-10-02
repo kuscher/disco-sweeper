@@ -3,7 +3,7 @@
 The dev VM can restart mid-task. This file is the status and the next steps; keep it current and
 commit at every milestone.
 
-Disco Sweeper is Alexander Kuscher's private, personal passion project: he made it and owns it.
+Disco Sweeper is a private, personal passion project, published as Fika Labs: its maker made it and owns it.
 
 ## Where things live
 - Repo `~/disco-sweeper`, GitHub github.com/kuscher/disco-sweeper (public). Releases carry

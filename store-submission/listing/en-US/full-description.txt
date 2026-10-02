@@ -23,4 +23,4 @@ No permissions at all: no internet, no storage. No accounts, no ads, no analytic
 About 100 KB. Designed for laptops and tablets with desktop windows, and works full screen too.
 
 Free and open source
-Disco Sweeper is a personal passion project by Alexander Kuscher, not affiliated with or endorsed by any employer. The code is MIT-licensed: github.com/kuscher/disco-sweeper
+Disco Sweeper is a personal passion project, not affiliated with or endorsed by any employer. The code is MIT-licensed: github.com/kuscher/disco-sweeper

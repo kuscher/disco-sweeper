@@ -24,7 +24,7 @@
   <img src="https://img.shields.io/badge/a_personal-passion_project-E0457B" alt="A personal passion project">
 </p>
 
-<p align="center"><sub>A private, personal passion project, made and owned by <a href="https://github.com/kuscher">Alexander Kuscher</a>.
+<p align="center"><sub>A private, personal passion project, made and owned by Fika Labs.
 Not affiliated with or endorsed by any employer (<a href="#about-this-project">more</a>).</sub></p>
 
 <p align="center">
@@ -112,11 +112,11 @@ Releases are built and signed by GitHub Actions when a version tag is pushed:
 ## About this project
 
 Disco Sweeper is my private, personal passion project. I made it, I own it, and I publish it here
-myself, [Alexander Kuscher](https://github.com/kuscher). It has no affiliation with my employer: my
+myself, as Fika Labs. It has no affiliation with my employer: my
 employer didn't make, sponsor, review or endorse it, and Disco Sweeper doesn't endorse my employer
 or its products either. The views, choices and any mistakes here are mine alone.
 
-— Alexander ([@kuscher](https://github.com/kuscher))
+— Fika Labs
 
 <sub>With a little help from Claude.</sub>
 
