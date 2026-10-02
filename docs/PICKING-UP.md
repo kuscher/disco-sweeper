@@ -16,7 +16,7 @@ Disco Sweeper is Alexander Kuscher's private, personal passion project: he made 
   [RELEASING.md](RELEASING.md).
 - Release key: secrets of the GitHub environment `release` (the Play key: environment `play`),
   alias `discosweeper`, certificate SHA-256 `BA:4D:93:AA:…:4B:9A:79:17`. A new key since 2026-09-30 (the one Google Play uses too;
-  GitHub installs of 1.0 must be uninstalled once), backed up with its password to the owner's a private folder, with a README. A machine that has it keeps
+  GitHub installs of 1.0 must be uninstalled once), backed up privately, outside the repo. A machine that has it keeps
   it in `~/.config/discosweeper/keystore.jks` + `keystore.pass` (not in git).
 - Where the code came from: the Sweeper module of the owner's private Disco app collection, moved
   here on its own with a new package, `io.github.kuscher.discosweeper`.

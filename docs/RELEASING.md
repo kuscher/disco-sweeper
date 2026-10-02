@@ -56,7 +56,7 @@ too. The workflow refuses to publish anything signed with another one.
   (`SIGNING_KEYSTORE_B64`, `SIGNING_KEYSTORE_PASS`). The Play key is a secret of the environment
   `play` (`PLAY_SERVICE_ACCOUNT_JSON`). Only `main` and `v*` tags can use these environments; forks
   and pull requests never get them.
-- The backup is in the owner's a private folder, with the password and a README.
+- The backup is kept privately by the owner, outside the repo.
 - Agents never need the key file. It is never committed (`.gitignore` covers `*.jks` and
   `*.keystore`).
 
